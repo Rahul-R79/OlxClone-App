@@ -1,9 +1,20 @@
+import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/Navbar/Navbar'
+import { UserProfileProvider } from './context/UserProfileContext';
+import Footer from './components/Footer/Footer';
+import Home from './pages/Home/Home';
+
+
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-500">
-      <h1 className="text-white text-4xl font-bold">Hello world 🎉</h1>
-    </div>
+    <AuthProvider>
+        <UserProfileProvider>
+                <Navbar />
+                <Home />
+                <Footer/>
+        </UserProfileProvider>
+    </AuthProvider>
   );
 }
 
-export default App
+export default App;
