@@ -198,10 +198,10 @@ function Home() {
                                         <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
                                         <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-lg font-bold text-blue-600">
+                                            <span className="text-lg font-bold text-teal-600">
                                                 {formatPrice(product.price)}
                                             </span>
-                                            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300">
+                                            <button className="bg-teal-400 hover:bg-teal-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300">
                                                 View Details
                                             </button>
                                         </div>

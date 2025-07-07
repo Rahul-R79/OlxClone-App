@@ -2,18 +2,18 @@ import { FaHeart, FaShare, FaPhone, FaMapMarkerAlt, FaUser, FaShieldAlt } from '
 import { useEffect, useRef } from 'react';
 
 function ProductDetails({ product, onClose }) {
-
     const modalRef = useRef(null);
+
+    // Close modal when user clicks outside it
     useEffect(() => {
         function handleClickOutside(event) {
             if (modalRef.current && !modalRef.current.contains(event.target)) {
                 onClose();
             }
         }
+
         document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [onClose]);
 
     return (
@@ -37,8 +37,9 @@ function ProductDetails({ product, onClose }) {
                             </button>
                         </div>
                     </div>
-
+                    {/*Product details*/}
                     <div className="flex flex-col md:flex-row gap-6">
+                        {/* Images & description */}
                         <div className="md:w-1/2">
                             <img 
                                 src={product.image} 
@@ -46,7 +47,7 @@ function ProductDetails({ product, onClose }) {
                                 className="w-full h-auto rounded-lg mb-4"
                             />
 
-                            {/* Additional product images */}
+                            {/* Thumbnails*/}
                             <div className="grid grid-cols-3 gap-2 mb-4">
                                 {[1, 2, 3].map((num) => (
                                     <img 
@@ -58,13 +59,16 @@ function ProductDetails({ product, onClose }) {
                                 ))}
                             </div>
 
+                            {/* Description box */}
                             <div className="bg-gray-100 p-4 rounded-lg">
                                 <h3 className="font-semibold text-lg mb-2">Description</h3>
                                 <p className="text-gray-700">{product.description}</p>
                             </div>
                         </div>
 
+                        {/* Right: Price, Seller Info, Contact Buttons */}
                         <div className="md:w-1/2">
+                            {/* Price info */}
                             <div className="bg-gray-100 p-4 rounded-lg mb-4">
                                 <h3 className="font-semibold text-lg mb-2">Price</h3>
                                 <p className="text-2xl font-bold text-blue-600">
@@ -80,6 +84,7 @@ function ProductDetails({ product, onClose }) {
                                 )}
                             </div>
 
+                            {/* Seller info */}
                             <div className="bg-gray-100 p-4 rounded-lg mb-4">
                                 <h3 className="font-semibold text-lg mb-2">Seller Information</h3>
                                 <div className="flex items-center gap-3 mb-2">
@@ -97,16 +102,17 @@ function ProductDetails({ product, onClose }) {
                                 </div>
                             </div>
 
+                            {/* Action buttons */}
                             <div className="flex flex-col gap-3">
                                 <button className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition-colors duration-300">
                                     <FaPhone /> Show Phone Number
                                 </button>
-
                                 <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium transition-colors duration-300">
                                     Chat with Seller
                                 </button>
                             </div>
 
+                            {/* Safety notice */}
                             <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-2">
                                 <FaShieldAlt className="text-yellow-500 mt-1" />
                                 <div>
@@ -119,7 +125,7 @@ function ProductDetails({ product, onClose }) {
                         </div>
                     </div>
 
-                    {/* Product Specifications */}
+                    {/* Product details table */}
                     <div className="mt-6">
                         <h3 className="text-xl font-bold mb-3">Details</h3>
                         <div className="grid grid-cols-2 gap-4">
@@ -142,7 +148,7 @@ function ProductDetails({ product, onClose }) {
                         </div>
                     </div>
 
-                    {/* Similar listings */}
+                    {/* Similar products (dummy data) */}
                     <div className="mt-8">
                         <h3 className="text-xl font-bold mb-4">Similar Listings</h3>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -161,6 +167,7 @@ function ProductDetails({ product, onClose }) {
                             ))}
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

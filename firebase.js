@@ -3,6 +3,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
+// Firebase config using environment variables 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -14,9 +15,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+// Initialize services: Auth, Firestore DB, Storage
 export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+
+// Google Auth provider instance
 export const googleProvider = new GoogleAuthProvider();
 
+// Sign in using Google popup
 export const signInWithGoogle = async () => {
     try {
         const result = await signInWithPopup(auth, googleProvider);
@@ -27,6 +34,7 @@ export const signInWithGoogle = async () => {
     }
 };
 
+// Sign out the current user
 export const signOutUser = async () => {
     try {
         await auth.signOut();
@@ -35,6 +43,3 @@ export const signOutUser = async () => {
         throw error;
     }
 };
-
-export const db = getFirestore(app);
-export const storage = getStorage(app);

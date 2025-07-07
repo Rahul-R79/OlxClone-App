@@ -46,10 +46,10 @@ const Footer = () => {
                 <div className="space-y-4">
                     <h4 className="font-bold text-sm">DOWNLOAD APP</h4>
                     <div className="flex space-x-2">
-                        <div className="px-4 py-2 bg-gray-300 rounded flex items-center justify-center cursor-pointer hover:bg-gray-200">
+                        <div className="px-4 py-2 bg-teal-300 rounded flex items-center justify-center cursor-pointer hover:bg-gray-200">
                             <span className="text-xs font-medium">Google Play</span>
                         </div>
-                        <div className="px-4 py-2 bg-gray-300 rounded flex items-center justify-center cursor-pointer hover:bg-gray-200">
+                        <div className="px-4 py-2 bg-teal-300 rounded flex items-center justify-center cursor-pointer hover:bg-gray-200">
                             <span className="text-xs font-medium">App Store</span>
                         </div>
                     </div>

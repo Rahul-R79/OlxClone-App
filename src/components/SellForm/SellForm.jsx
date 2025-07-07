@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../firebase';
+import { useUserProfile } from '../../context/UserProfileContext';
 import { useAuth } from '../../context/AuthContext';
 import closeIcon from '../../assets/images/close.svg';
 import './SellForm.css';
@@ -9,6 +10,7 @@ import './SellForm.css';
 function SellForm({ onClose }) {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
+	const { fetchUserProducts } = useUserProfile();
 
     const [formData, setFormData] = useState({
         title: '',
@@ -162,64 +164,68 @@ function SellForm({ onClose }) {
         return uploadedUrls;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (!validateForm()) return;
-        if (!currentUser) {
-            navigate('/login', { state: { from: 'sell', message: 'Please login to sell products' } });
-            return;
-        }
-
-        setIsSubmitting(true);
-        setUploadProgress(0);
-
-        try {
-            const imageUrls = await uploadImagesToCloudinary();
-
-            const productData = {
-                title: formData.title.trim(),
-                price: parseFloat(formData.price),
-                description: formData.description.trim(),
-                category: formData.category,
-                condition: formData.condition,
-                images: imageUrls,
-                sellerId: currentUser.uid,
-                sellerName: currentUser.displayName || 'Anonymous',
-                sellerPhoto: currentUser.photoURL || null,
-                createdAt: serverTimestamp(),
-                status: 'available',
-                views: 0,
-                savedBy: []
-            };
-
-            await addDoc(collection(db, 'products'), productData);
-
-            setFormData({
-                title: '',
-                price: '',
-                description: '',
-                category: '',
-                condition: 'used',
-                images: []
-            });
-
-            setShowSuccessPopup(true);
-            setTimeout(() => {
-                setShowSuccessPopup(false);
-                onClose();
-            }, 3000);
-        } catch (error) {
-            console.error('Error submitting product:', error);
-            alert('Failed to list product. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
+    if (!validateForm()) return;
     if (!currentUser) {
-        return null;
+        navigate('/login', { state: { from: 'sell', message: 'Please login to sell products' } });
+        return;
     }
+
+    setIsSubmitting(true);
+    setUploadProgress(0);
+
+    try {
+        const imageUrls = await uploadImagesToCloudinary();
+
+        const productData = {
+            title: formData.title.trim(),
+            price: parseFloat(formData.price),
+            description: formData.description.trim(),
+            category: formData.category,
+            condition: formData.condition,
+            images: imageUrls,
+            sellerId: currentUser.uid,
+            sellerName: currentUser.displayName || 'Anonymous',
+            sellerPhoto: currentUser.photoURL || null,
+            createdAt: serverTimestamp(),
+            status: 'available',
+            views: 0,
+            savedBy: []
+        };
+
+        // Add the new product to Firestore
+        await addDoc(collection(db, 'products'), productData);
+
+        // Refresh the user's product list in the profile
+        if (fetchUserProducts) {
+            await fetchUserProducts();
+        }
+
+        // Reset form and show success
+        setFormData({
+            title: '',
+            price: '',
+            description: '',
+            category: '',
+            condition: 'used',
+            images: []
+        });
+
+        setShowSuccessPopup(true);
+        setTimeout(() => {
+            setShowSuccessPopup(false);
+            onClose();
+        }, 3000);
+
+		} catch (error) {
+			console.error('Error submitting product:', error);
+			alert('Failed to list product. Please try again.');
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
     return (
         <div className="sell-form-modal">

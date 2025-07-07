@@ -3,10 +3,10 @@ import { useAuth } from '../../context/AuthContext';
 import SellForm from '../SellForm/SellForm';
 import LoginModal from '../LoginModal/LoginModal';
 import logo from '../../assets/images/symbol.png';
-import searchwt from '../../assets/images/search.svg';
+import searchwt from '../../assets/images/search1.svg';
 import userIcon from '../../assets/images/avatar.png';
 import sellButtonImage from '../../assets/images/addButton.png';
-import menuIcon from '../../assets/images/arrow-down.svg';
+import menuIcon from '../../assets/images/menu.png';
 import closeMenuIcon from '../../assets/images/close.svg';
 
 function Navbar() {
@@ -16,7 +16,6 @@ function Navbar() {
     const [showSellForm, setShowSellForm] = useState(false);
     const mobileMenuRef = useRef(null);
 
-    // Close mobile menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -104,7 +103,7 @@ function Navbar() {
                         </div>
                     </div>
 
-                    {/* Desktop View: Right Side - Language | User | Sell */}
+                    {/* Desktop View */}
                     <div className="hidden xl:flex items-center gap-4">
                         {/* Language */}
                         <p className="font-medium text-gray-700">English</p>

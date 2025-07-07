@@ -1,54 +1,61 @@
-// context/UserProfileContext.js
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 const UserProfileContext = createContext();
 
+// Provider component
 export function UserProfileProvider({ children }) {
     const { currentUser } = useAuth();
+
     const [userProfile, setUserProfile] = useState(null);
-    const [soldProducts, setSoldProducts] = useState([]);
+    const [userProducts, setUserProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (currentUser) {
-            const fetchUserData = async () => {
-                setLoading(true);
-                try {
-                    const mockProfile = {
-                        name: currentUser.displayName,
-                        email: currentUser.email,
-                        photoURL: currentUser.photoURL,
-                        joinDate: new Date().toISOString(),
-                        rating: 4.5,
-                    };
+    // Fetch user's products and profile info
+    const fetchUserProducts = async () => {
+        if (!currentUser) return;
 
-                    const mockProducts = [
-                        { id: 1, title: 'Used iPhone 12', price: 35000, date: '2023-05-15' },
-                        { id: 2, title: 'Sony Headphones', price: 5000, date: '2023-06-20' },
-                    ];
+        setLoading(true);
+        try {
+            const q = query(
+                collection(db, 'products'),
+                where('sellerId', '==', currentUser.uid)
+            );
+            const querySnapshot = await getDocs(q);
 
-                    setUserProfile(mockProfile);
-                    setSoldProducts(mockProducts);
-                } catch (error) {
-                    console.error("Failed to fetch user data", error);
-                } finally {
-                    setLoading(false);
-                }
-            };
+            const products = [];
+            querySnapshot.forEach((doc) => {
+                products.push({ id: doc.id, ...doc.data() });
+            });
 
-            fetchUserData();
-        } else {
-            setUserProfile(null);
-            setSoldProducts([]);
+            setUserProducts(products);
+
+            setUserProfile({
+                name: currentUser.displayName,
+                email: currentUser.email,
+                photoURL: currentUser.photoURL,
+                joinDate: currentUser.metadata.creationTime,
+                rating: 4.5, 
+            });
+        } catch (error) {
+            console.error("Failed to fetch user data", error);
+        } finally {
             setLoading(false);
         }
+    };
+
+    // Run on user change
+    useEffect(() => {
+        fetchUserProducts();
     }, [currentUser]);
 
     const value = {
         userProfile,
-        soldProducts,
+        userProducts,
         loading,
+        fetchUserProducts,
     };
 
     return (
@@ -58,6 +65,11 @@ export function UserProfileProvider({ children }) {
     );
 }
 
+// Hook to access context
 export function useUserProfile() {
-    return useContext(UserProfileContext);
+    const context = useContext(UserProfileContext);
+    if (context === undefined) {
+        throw new Error('useUserProfile must be used within a UserProfileProvider');
+    }
+    return context;
 }
